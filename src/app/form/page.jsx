@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
+import { CldUploadWidget } from "next-cloudinary"; // Import Cloudinary upload widget
 
 const Page = () => {
   const [forms, setForms] = useState([]);
@@ -7,7 +8,7 @@ const Page = () => {
 
   useEffect(() => {
     const fetchForms = async () => {
-      const res = await fetch('/api/form');
+      const res = await fetch("/api/form");
       const data = await res.json();
       setForms(data.data);
     };
@@ -15,17 +16,21 @@ const Page = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    const res = await fetch(`/api/form/${id}`, {
-      method: 'DELETE',
-    });
+    // Show confirmation dialog
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this form?"
+    );
 
-    const data = await res.json();
+    if (confirmDelete) {
+      const res = await fetch(`/api/form/${id}`, {
+        method: "DELETE",
+      });
 
-    if (data.success) {
-      setForms(forms.filter((form) => form._id !== id));
-      alert('Form deleted successfully');
-    } else {
-      alert('Failed to delete form');
+      const data = await res.json();
+
+      if (data.success) {
+        setForms(forms.filter((form) => form._id !== id));
+      }
     }
   };
 
@@ -36,9 +41,9 @@ const Page = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     const res = await fetch(`/api/form/${editingForm._id}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(editingForm),
     });
@@ -51,10 +56,7 @@ const Page = () => {
           form._id === editingForm._id ? { ...form, ...editingForm } : form
         )
       );
-      alert('Form updated successfully');
       setEditingForm(null);
-    } else {
-      alert('Failed to update form');
     }
   };
 
@@ -62,9 +64,21 @@ const Page = () => {
     setEditingForm({ ...editingForm, [e.target.name]: e.target.value });
   };
 
+  // Cloudinary image upload success handler
+  const handleImageUpload = (results) => {
+    if (results.info?.secure_url && results.event === "success") {
+      setEditingForm({
+        ...editingForm,
+        image: results.info.secure_url,
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-8">
-      <h1 className="text-4xl font-extrabold text-gray-800 mb-6">Forms Table</h1>
+      <h1 className="text-4xl font-extrabold text-gray-800 mb-6">
+        Forms Table
+      </h1>
       <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
         <table className="min-w-full text-sm text-gray-700">
           <thead className="bg-indigo-600 text-white">
@@ -84,7 +98,13 @@ const Page = () => {
                 <td className="py-3 px-6">{form.rollNumber}</td>
                 <td className="py-3 px-6">{form.address}</td>
                 <td className="py-3 px-6">{form.phoneNumber}</td>
-                <td className="py-3 px-6">{form.imageTitle}</td>
+                <td className="py-3 px-6">
+                  <img
+                    src={form.image}
+                    alt="Form Image"
+                    className="w-16 h-16 rounded-lg object-cover"
+                  />
+                </td>
                 <td className="py-3 px-6 flex justify-center gap-3">
                   <button
                     onClick={() => handleEdit(form)}
@@ -149,6 +169,39 @@ const Page = () => {
                   className="w-full mt-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
+
+              {/* Cloudinary Image Upload */}
+              <div className="flex flex-col items-center mt-4">
+                <CldUploadWidget
+                  cloudName={process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
+                  uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
+                  onSuccess={handleImageUpload}
+                >
+                  {({ open }) => (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        open();
+                      }}
+                      className="bg-blue-500 text-white rounded-full p-5 mt-5 flex items-center justify-center hover:bg-blue-600 transition-shadow shadow-lg hover:shadow-xl"
+                    >
+                      <span className="text-lg font-bold">Upload Image</span>
+                    </button>
+                  )}
+                </CldUploadWidget>
+
+                {editingForm.image && (
+                  <div className="mt-5">
+                    <img
+                      src={editingForm.image}
+                      alt="Uploaded"
+                      className="w-32 h-32 rounded-lg shadow-md"
+                    />
+                  </div>
+                )}
+              </div>
+
               <div className="flex justify-end gap-4">
                 <button
                   type="button"

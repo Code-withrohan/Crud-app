@@ -2,13 +2,15 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { CldUploadWidget } from 'next-cloudinary';
 
 const Form = () => {
   const [formData, setFormData] = useState({
     name: '',
     rollNumber: '',
     address: '',
-    phoneNumber: ''
+    phoneNumber: '',
+    image: '',
   });
   const [error, setError] = useState('');
   const router = useRouter();
@@ -45,6 +47,7 @@ const Form = () => {
           rollNumber: '',
           address: '',
           phoneNumber: '',
+          image: '',
         });
       } else {
         alert('Failed to add data');
@@ -111,6 +114,40 @@ const Form = () => {
               placeholder="Enter your phone number"
               className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:ring-4 focus:ring-blue-500 focus:outline-none"
             />
+          </div>
+
+          {/* Image Upload */}
+          <div className="flex flex-col items-center">
+            <CldUploadWidget
+              cloudName={process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
+              uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
+              onSuccess={(results) => {
+                if (results.info?.secure_url && results.event === 'success') {
+                  setFormData({
+                    ...formData,
+                    image: results.info.secure_url,
+                  });
+                }
+              }}
+            >
+              {({ open }) => (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    open();
+                  }}
+                  className="bg-blue-500 text-white rounded-full p-5 mt-5 flex items-center justify-center hover:bg-blue-600 transition-shadow shadow-lg hover:shadow-xl"
+                >
+                  <span className="text-lg font-bold">Upload Image</span>
+                </button>
+              )}
+            </CldUploadWidget>
+            {formData.image && (
+              <div className="mt-5">
+                <img src={formData.image} alt="Uploaded" className="w-32 h-32 rounded-lg shadow-md" />
+              </div>
+            )}
           </div>
 
           {/* Submit and Back Buttons */}
