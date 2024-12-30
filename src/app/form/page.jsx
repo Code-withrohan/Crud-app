@@ -63,36 +63,38 @@ const Page = () => {
   };
 
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-semibold mb-6">Forms Table</h1>
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white rounded-lg shadow-md">
-          <thead>
+    <div className="min-h-screen bg-gray-50 p-8">
+      <h1 className="text-4xl font-extrabold text-gray-800 mb-6">Forms Table</h1>
+      <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
+        <table className="min-w-full text-sm text-gray-700">
+          <thead className="bg-indigo-600 text-white">
             <tr>
-              <th className="py-2 px-4 border-b">Name</th>
-              <th className="py-2 px-4 border-b">Roll Number</th>
-              <th className="py-2 px-4 border-b">Address</th>
-              <th className="py-2 px-4 border-b">Phone Number</th>
-              <th className="py-2 px-4 border-b">Actions</th>
+              <th className="py-3 px-6 text-left">Name</th>
+              <th className="py-3 px-6 text-left">Roll Number</th>
+              <th className="py-3 px-6 text-left">Address</th>
+              <th className="py-3 px-6 text-left">Phone Number</th>
+              <th className="py-3 px-6 text-left">Image</th>
+              <th className="py-3 px-6 text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
             {forms.map((form) => (
-              <tr key={form._id}>
-                <td className="py-2 px-4 border-b">{form.name}</td>
-                <td className="py-2 px-4 border-b">{form.rollNumber}</td>
-                <td className="py-2 px-4 border-b">{form.address}</td>
-                <td className="py-2 px-4 border-b">{form.phoneNumber}</td>
-                <td className="py-2 px-4 border-b flex gap-2">
+              <tr key={form._id} className="border-b hover:bg-gray-100">
+                <td className="py-3 px-6">{form.name}</td>
+                <td className="py-3 px-6">{form.rollNumber}</td>
+                <td className="py-3 px-6">{form.address}</td>
+                <td className="py-3 px-6">{form.phoneNumber}</td>
+                <td className="py-3 px-6">{form.imageTitle}</td>
+                <td className="py-3 px-6 flex justify-center gap-3">
                   <button
                     onClick={() => handleEdit(form)}
-                    className="bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600"
+                    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => handleDelete(form._id)}
-                    className="bg-red-500 text-white px-4 py-1 rounded-md hover:bg-red-600"
+                    className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
                   >
                     Delete
                   </button>
@@ -105,9 +107,9 @@ const Page = () => {
 
       {editingForm && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg w-1/3">
-            <h2 className="text-2xl mb-4">Edit Form</h2>
-            <form onSubmit={handleUpdate} className="space-y-4">
+          <div className="bg-white p-8 rounded-lg w-1/3 shadow-xl">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Edit Form</h2>
+            <form onSubmit={handleUpdate} className="space-y-6">
               <div>
                 <label className="block text-gray-700">Name</label>
                 <input
@@ -115,7 +117,7 @@ const Page = () => {
                   name="name"
                   value={editingForm.name}
                   onChange={handleChange}
-                  className="w-full mt-1 p-2 border rounded-md"
+                  className="w-full mt-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
               <div>
@@ -125,7 +127,7 @@ const Page = () => {
                   name="rollNumber"
                   value={editingForm.rollNumber}
                   onChange={handleChange}
-                  className="w-full mt-1 p-2 border rounded-md"
+                  className="w-full mt-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
               <div>
@@ -134,7 +136,7 @@ const Page = () => {
                   name="address"
                   value={editingForm.address}
                   onChange={handleChange}
-                  className="w-full mt-1 p-2 border rounded-md"
+                  className="w-full mt-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 ></textarea>
               </div>
               <div>
@@ -144,20 +146,20 @@ const Page = () => {
                   name="phoneNumber"
                   value={editingForm.phoneNumber}
                   onChange={handleChange}
-                  className="w-full mt-1 p-2 border rounded-md"
+                  className="w-full mt-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
               <div className="flex justify-end gap-4">
                 <button
                   type="button"
                   onClick={() => setEditingForm(null)}
-                  className="bg-gray-400 text-white px-4 py-2 rounded-md"
+                  className="bg-gray-400 text-white px-6 py-3 rounded-lg hover:bg-gray-500 transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-green-500 text-white px-4 py-2 rounded-md"
+                  className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition"
                 >
                   Update
                 </button>

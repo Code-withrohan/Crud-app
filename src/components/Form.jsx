@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 const Form = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +11,7 @@ const Form = () => {
     phoneNumber: ''
   });
   const [error, setError] = useState('');
+  const router = useRouter();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,18 +24,17 @@ const Form = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Form validation
     if (!formData.name || !formData.rollNumber || !formData.address || !formData.phoneNumber) {
       setError('Please fill all fields');
       return;
     }
 
-    setError(''); // Clear any previous error
+    setError('');
 
     try {
       const response = await axios.post('/api/form', formData, {
         headers: {
-          'Content-Type': 'application/json', // Since you're sending JSON data
+          'Content-Type': 'application/json',
         },
       });
 
@@ -55,60 +56,77 @@ const Form = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-1/3">
-        <h1 className="text-2xl font-semibold text-center mb-6">Form Page</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {error && <p className="text-red-500 text-center">{error}</p>}
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
+      <div className="bg-white p-12 rounded-xl shadow-xl w-full max-w-lg">
+        <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-10">Form Submission</h1>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {error && <p className="text-red-600 text-center font-semibold">{error}</p>}
+          
+          {/* Name Input */}
           <div>
-            <label className="block text-gray-700">Name</label>
+            <label className="block text-gray-800 font-semibold mb-1">Name</label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleChange}
               placeholder="Enter your name"
-              className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:ring-4 focus:ring-blue-500 focus:outline-none"
             />
           </div>
+
+          {/* Roll Number Input */}
           <div>
-            <label className="block text-gray-700">Roll Number</label>
+            <label className="block text-gray-800 font-semibold mb-1">Roll Number</label>
             <input
               type="text"
               name="rollNumber"
               value={formData.rollNumber}
               onChange={handleChange}
               placeholder="Enter your roll number"
-              className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:ring-4 focus:ring-blue-500 focus:outline-none"
             />
           </div>
+
+          {/* Address Input */}
           <div>
-            <label className="block text-gray-700">Address</label>
+            <label className="block text-gray-800 font-semibold mb-1">Address</label>
             <textarea
               name="address"
               value={formData.address}
               onChange={handleChange}
               placeholder="Enter your address"
-              className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:ring-4 focus:ring-blue-500 focus:outline-none"
             ></textarea>
           </div>
+
+          {/* Phone Number Input */}
           <div>
-            <label className="block text-gray-700">Phone Number</label>
+            <label className="block text-gray-800 font-semibold mb-1">Phone Number</label>
             <input
               type="tel"
               name="phoneNumber"
               value={formData.phoneNumber}
               onChange={handleChange}
               placeholder="Enter your phone number"
-              className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:ring-4 focus:ring-blue-500 focus:outline-none"
             />
           </div>
-          <div className="flex justify-center">
+
+          {/* Submit and Back Buttons */}
+          <div className="flex justify-between gap-4">
             <button
               type="submit"
-              className="bg-blue-500 text-white py-2 px-6 rounded-md hover:bg-blue-600 transition"
+              className="bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg hover:bg-blue-700 transition transform hover:scale-105"
             >
               Submit
+            </button>
+            <button
+              type="button"
+              onClick={() => router.push('/form')}
+              className="bg-gray-700 text-white font-semibold py-3 px-8 rounded-lg hover:bg-gray-800 transition transform hover:scale-105"
+            >
+              View Data
             </button>
           </div>
         </form>
